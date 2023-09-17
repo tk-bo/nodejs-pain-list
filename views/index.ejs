@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>LIST APP</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/send_url.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="header-logo">PAIN LIST</a>
+    </header>
+    <div class="container">
+      <div class="container-header">
+        <h1>疼痛状況</h1>
+        <a href="/new" class="new-button">+ 新規登録</a>
+      </div>
+
+      <table id="table1" >
+        <tr>
+          <th width="18%">登録番号 or 名前</th>
+          <th width="20%">動作</th>
+          <th width="8%">VAS</th>
+          <th width="41%">memo</th>
+          <th width="5%"></th>
+          <th width="5%"></th>
+        </tr>
+        
+          <% items.forEach((item) => { %>
+            <tr>
+              
+              <td width="18%"><%= item.number %></td>
+              <td width="20%"><%= item.movement %></td>
+              <td width="8%"><%= item.VAS %></td>
+              <td width="41"><%= item.memo %></td>
+              
+              <td width="5%">
+                <form action="/delete/<%= item.id %>" method="post">
+                  <input type="submit" value="削除">
+                </form>
+              </td>
+              <td width="5%"><a class="edit-data" href="/edit/<%= item.id %>">編集</a></td>
+              
+            </tr>
+          <% }) %>
+          
+      </table>
+      <b><a id="download" class="csvdownload" href="#" download="pain_list.csv" onclick="handleDownload()">csvファイルダウンロード</a></b>
+        
+      <script>
+        //ここからCSV出力＆ダウンロード
+        function handleDownload() {
+            var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);//文字コードをBOM付きUTF-8に指定
+            var table = document.getElementById('table1');//id=table1という要素を取得
+            var data_csv="";//ここに文字データとして値を格納していく
+    
+            for(var i = 0;  i < table.rows.length; i++){
+              for(var j = 0; j < table.rows[i].cells.length; j++){
+                data_csv += table.rows[i].cells[j].innerText;//HTML中の表のセル値をdata_csvに格納
+                if(j == table.rows[i].cells.length-1) data_csv += "\n";//行終わりに改行コードを追加
+                else data_csv += ",";//セル値の区切り文字として,を追加
+              }
+            }
+    
+            var blob = new Blob([ bom, data_csv], { "type" : "text/csv" });//data_csvのデータをcsvとしてダウンロードする関数
+            if (window.navigator.msSaveBlob) { //IEの場合の処理
+                window.navigator.msSaveBlob(blob, "pain_list.csv"); 
+                //window.navigator.msSaveOrOpenBlob(blob, "test.csv");// msSaveOrOpenBlobの場合はファイルを保存せずに開ける
+            } else {
+                document.getElementById("download").href = window.URL.createObjectURL(blob);
+            }
+    
+            delete data_csv;//data_csvオブジェクトはもういらないので消去してメモリを開放
+        }
+        //ここまでCSV出力＆ダウンロード
+    </script>
+    </div>
+  </body>
+</html>

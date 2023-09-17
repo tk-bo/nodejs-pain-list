@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PAIN APP</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/send_url.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="header-logo">PAIN LIST</a>
+    </header>
+    <div class="container">
+      <div class="container-header">
+        <h1>疼痛状況リスト編集</h1>
+      </div>
+      <div class="item-form-wrapper">
+        
+        <form action="/update/<%= item.id %>" method="post">
+          <p class="form-label">登録番号 or 名前</p>
+          <input type="text" name="itemName1" value="<%= item.number %>">
+          <p class="form-label">動作・部位</p>
+          <input type="text" name="itemName2" value="<%= item.movement %>">
+          <p class="form-labe">VAS</p>
+          <p class="pain1">↓痛みなし</p> <p class="pain2">想像できる最大の痛み↓</p> 
+          <input class="input-range" name="itemName3" id="slider1" type="range" value="<%= item.VAS %>" min="0" max="100" onchange="change_slider();"/>
+          <p class="form-label">memo</p>
+          <input type="text" name="itemName4" value="<%= item.memo %>">
+          
+          <script>
+            function change_slider() {
+              var slider = document.getElementById("slider1");
+              var out_frame = document.getElementById("vas-value");
+        
+              out_frame.innerText = slider.value;
+            }
+          </script>
+          
+     
+          <input type="submit" value="更新する">
+
+         
+
+          
+        </form>
+      </div>
+      <a href="/index" class="cancel-button">一覧にもどる</a>
+    </div>
+  </body>
+</html>
