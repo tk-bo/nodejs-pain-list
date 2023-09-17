@@ -1,79 +1,372 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>LIST APP</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <script src="/send_url.js"></script>
-  </head>
-  <body>
-    <header>
-      <a href="/" class="header-logo">PAIN LIST</a>
-    </header>
-    <div class="container">
-      <div class="container-header">
-        <h1>疼痛状況</h1>
-        <a href="/new" class="new-button">+ 新規登録</a>
-      </div>
+/* reset ================================ */
+* {
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-size: 100%;
+    font-family: 'Hiragino Sans', sans-serif;
+    line-height: 1.7;
+    letter-spacing: 1px;
+  }
+  
+  body {
+    margin: 0;
+    background-color: #efefef;
+    color: #808080;
+  }
+  
+  
+  a {
+    display: block;
+    text-decoration: none;
+    color: #2d3133;
+    font-size: 14px;
+  }
+  
+  a:hover {
+    transition: all 0.3s ease;
+  }
+  
+  
+  h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+  }
+  
+  h1 {
+    font-weight: 600;
+  }
+  
+  input {
+    font-family: inherit;
+    font-size: 100%;
+  }
+  
+  /* top ================================ */
+  .top-wrapper {
+    max-width: 1200px;
+    min-width: 920px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 60px;
+  }
 
-      <table id="table1" >
-        <tr>
-          <th width="18%">登録番号 or 名前</th>
-          <th width="20%">動作</th>
-          <th width="8%">VAS</th>
-          <th width="41%">memo</th>
-          <th width="5%"></th>
-          <th width="5%"></th>
-        </tr>
-        
-          <% items.forEach((item) => { %>
-            <tr>
-              
-              <td width="18%"><%= item.number %></td>
-              <td width="20%"><%= item.movement %></td>
-              <td width="8%"><%= item.VAS %></td>
-              <td width="41"><%= item.memo %></td>
-              
-              <td width="5%">
-                <form action="/delete/<%= item.id %>" method="post">
-                  <input type="submit" value="削除">
-                </form>
-              </td>
-              <td width="5%"><a class="edit-data" href="/edit/<%= item.id %>">編集</a></td>
-              
-            </tr>
-          <% }) %>
-          
-      </table>
-      <b><a id="download" class="csvdownload" href="#" download="pain_list.csv" onclick="handleDownload()">csvファイルダウンロード</a></b>
-        
-      <script>
-        //ここからCSV出力＆ダウンロード
-        function handleDownload() {
-            var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);//文字コードをBOM付きUTF-8に指定
-            var table = document.getElementById('table1');//id=table1という要素を取得
-            var data_csv="";//ここに文字データとして値を格納していく
-    
-            for(var i = 0;  i < table.rows.length; i++){
-              for(var j = 0; j < table.rows[i].cells.length; j++){
-                data_csv += table.rows[i].cells[j].innerText;//HTML中の表のセル値をdata_csvに格納
-                if(j == table.rows[i].cells.length-1) data_csv += "\n";//行終わりに改行コードを追加
-                else data_csv += ",";//セル値の区切り文字として,を追加
-              }
-            }
-    
-            var blob = new Blob([ bom, data_csv], { "type" : "text/csv" });//data_csvのデータをcsvとしてダウンロードする関数
-            if (window.navigator.msSaveBlob) { //IEの場合の処理
-                window.navigator.msSaveBlob(blob, "pain_list.csv"); 
-                //window.navigator.msSaveOrOpenBlob(blob, "test.csv");// msSaveOrOpenBlobの場合はファイルを保存せずに開ける
-            } else {
-                document.getElementById("download").href = window.URL.createObjectURL(blob);
-            }
-    
-            delete data_csv;//data_csvオブジェクトはもういらないので消去してメモリを開放
-        }
-        //ここまでCSV出力＆ダウンロード
-    </script>
-    </div>
-  </body>
-</html>
+  .top-image {
+    position: relative;
+  }
+  
+  .top-detail {
+    position: absolute;
+    top: 500px;
+    left: 570px;
+    width: 36%;
+    min-width: 320px;
+    margin-top: -40px;
+    z-index: 10;
+  }
+  
+  .top-detail .description {
+    font-size: 14px;
+    line-height: 28px;
+    letter-spacing: 0.5px;
+    margin-bottom: 40px;
+  }
+  
+  .top-detail .index-button {
+    width: 184px;
+    height: 48px;
+    text-align: center;
+    line-height: 45px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #d89000;;
+    background-color: #ffffff;
+    border: 2px solid #d89000;
+    border-radius: 2px;
+  }
+  
+  .top-detail .index-button:hover {
+    color: #ffffff;
+    background-color:  #d89000;
+  }
+  
+  .index-button {
+    cursor: pointer;
+  }
+  
+  .top-image {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .top-image img {
+    width: 88%;
+  }
+  
+  /* header ================================ */
+  header {
+    height: 56px;
+    background-color: #ffda9f;
+    border-bottom: 1px solid #ffd8b9;
+  }
+  
+  .header-logo {
+    margin-left: 56px;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 56px;
+    color: #717171;
+    display: inline;
+  }
+  
+  .header-logo:hover {
+    color: #ff493c;
+  }
+  
+  /* container ================================ */
+  .container {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 56px;
+  }
+  
+  .container-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .container-header .new-button {
+    background: #0e5200;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    width: 120px;
+    height: 45px;
+    line-height: 43px;
+    text-align: center;
+    color: #ffffff;
+    border: 2px solid #0e5200;
+  }
+  .container-header .new-button:hover {
+    background-color: #ffffff;
+    color: #0e5200;
+    transition: all 0.3s ease;
+  }
+  
+  .cancel-button {
+    font-size: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    margin-left: 2px;
+    color: #5f5f5f;
+    text-decoration: underline;
+    display: inline-block;
+  }
+  
+  .cancel-button:hover {
+    color: #896000;
+  }
+  
+  .container-header h1 {
+    font-size: 24px;
+  }
+  
+  /* index ================================ */
+  table {
+    border-collapse: collapse;
+    border: 0;
+    width: 100%;
+  }
+
+  table th{
+    background-color: #896000;
+    height: 60px;
+    color: #ffffff;
+    text-align: center;
+  }
+  
+  table td{
+    background-color: rgb(255, 255, 255);
+    height: 60px;
+    text-align: center;
+  }
+
+  .delete-botton{
+    padding-left: 3px;
+  }
+
+  .delete-submit {
+    border: none;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #606162;
+  }
+
+  .delete-submit:hover {
+    color: #ff1a1a;
+    font-weight: 600;
+  }
+
+  .edit-data{
+    font-weight: 300;
+    color: #606162;   
+  }
+
+  .edit-data:hover{
+    color: #3831ff;
+    font-weight: 600;
+  }
+
+  .csvdownload {
+    font-size: 15px;
+    font-weight: 600;
+    color: #a6a6a6;
+    text-decoration: underline;
+    display: inline;
+  }
+
+  .csvdownload:hover{
+    color: #1c8300;
+    font-weight: 900;
+  }
+
+  /* リセットCSS（すでに指定済なら不要）*/
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* リセットCSS（すでに指定済なら不要）*/
+  * {
+    box-sizing: border-box;
+  }
+  
+  .input-range {
+    -webkit-appearance: none; /* これ無しだとスタイルがほぼ全く反映されないので注意*/
+    appearance: none;
+    cursor: pointer; /*カーソルを分かりやすく*/
+    background: #fdfdfd; /* バーの背景色 :/
+    height: 14px; /* バーの高さ */
+    width: 100%; /* スライダーの幅 */
+    border-radius: 0px; /* バーの端の丸み */
+    border: solid 1px #000101; /* バーまわりの線 */
+    outline: 3; /* アウトラインを消して代わりにfocusのスタイルをあてる */
+    &:focus {
+      box-shadow: 0 0 4px rgb(243, 81, 255);
+    }
+    /* -webkit-向けのつまみ */
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none; /* デフォルトのつまみのスタイルを解除 */
+      background: #696969; /* 背景色 */
+      width: 12px; /* 幅 */
+      height: 24px; /* 高さ */
+      border-radius: 0%; /* 円形に */
+      box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15); /* 影 */
+    }
+    /* -moz-向けのつまみ */
+    &::-moz-range-thumb {
+      background: #686868; /* 背景色 */
+      width: 12px; /* 幅 */
+      height: 24px; /* 高さ */
+      border-radius: 0%; /* 円形に */
+      box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15); /* 影 */
+      border: none; /* デフォルトの線を消す */
+    }
+    /* Firefoxで点線が周りに表示されてしまう問題の解消 */ 
+    &::-moz-focus-outer {
+      border: 0;
+    }
+    /* つまみをドラッグしているときのスタイル */ 
+    &:active::-webkit-slider-thumb {
+      box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
+    }
+
+  }
+
+  /* new, edit ================================ */
+  .item-form-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #f0f4f9;
+    border-radius: 0px 0px 2px 2px;
+    padding: 32px;
+  }
+  
+  .form-label {
+    font-size: 14px;
+    color: #8491a5;
+    padding: 5px 0 0 0;
+  }
+  
+  .item-form-wrapper input[type="text"] {
+    width: 100%;
+    height: 40px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 12px 16px;
+    background-color: #fcfcfd;
+    border: 1px solid #bac6d3;
+    border-radius: 2px;
+    color: #767676;
+    font-size: 12px;
+  }
+
+  .item-form-wrapper input[type="int"] {
+    width: 100%;
+    height: 40px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 12px 16px;
+    background-color: #fcfcfd;
+    border: 1px solid #bac6d3;
+    border-radius: 2px;
+    color: #767676;
+    font-size: 12px;
+  }
+  
+  .item-form-wrapper input[type="submit"] {
+    display: block;
+    width: 120px;
+    height: 45px;
+    margin-top: 24px;
+    margin-left: auto;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: #af7500;
+    color: #ffffff;
+    cursor: pointer;
+    outline: none;
+    border: 2px solid #af7500;
+  }
+  
+  .item-form-wrapper input[type="submit"]:hover {
+    background-color: #ffffff;
+    color: #af7500;
+    transition: all 0.3s ease;
+  }
+
+  output {
+    background: #f9f9f9;
+    border: solid 1px #ccc;
+    display: inline-block;
+    padding: 0.2em 1em;
+    margin: 0 0 0 10px;
+  }
+
+  .pain1{
+    float: left;
+    display: block;
+    color: #808080;
+    font-size: 14px;
+  }
+
+  .pain2{
+    float: right;
+    display: block;
+    color: #808080;
+    font-size: 15px;
+  }
+
