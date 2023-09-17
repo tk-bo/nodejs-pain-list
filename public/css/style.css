@@ -196,26 +196,43 @@
     text-align: center;
   }
 
+  .delete-botton{
+    padding-left: 3px;
+  }
+
+  .delete-submit {
+    border: none;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #606162;
+  }
+
+  .delete-submit:hover {
+    color: #ff1a1a;
+    font-weight: 600;
+  }
+
   .edit-data{
     font-weight: 300;
     color: #606162;   
   }
 
   .edit-data:hover{
-    color: #ffffff;
-    background-color: #2d3133;
+    color: #3831ff;
+    font-weight: 600;
   }
 
   .csvdownload {
     font-size: 15px;
     font-weight: 600;
-    color: #1c8300;
+    color: #a6a6a6;
     text-decoration: underline;
     display: inline;
   }
 
   .csvdownload:hover{
-    color: #a6a6a6;
+    color: #1c8300;
+    font-weight: 900;
   }
 
   /* リセットCSS（すでに指定済なら不要）*/
@@ -352,4 +369,3 @@
     color: #808080;
     font-size: 15px;
   }
-
